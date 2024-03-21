@@ -11,6 +11,9 @@ const create = async (req, res) => {
     let t;
 
     const { logo, title, description, publicationDate, introductoryVideo, lessons } = req.body;
+    if (!logo || !title || !description || !publicationDate || !lessons ) {
+        return res.status(400).send({ success: false, message: "Los campos 'logo', 'title', 'description', 'publicationDate' y 'lessons' son obligatorios" });
+    }
     const courseData = {
         logo: logo,
         title: title,

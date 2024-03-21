@@ -5,13 +5,26 @@ class UserService {
     constructor() {}
 
     async find() {
-      const res = await models.User.findAll();
+      const res = await models.User.findAll({
+        attributes: [
+          'id', 
+          'fullname', 
+          'birthDate', 
+          'email',
+          [sequelize.literal('(SELECT description FROM `IdentificationType` WHERE `IdentificationType`.`id` = `User`.`identificationTypeId`)'), 'IdentificationType'],
+          'identificationNumber', 
+          [sequelize.literal('(SELECT description FROM `UserRole` WHERE `UserRole`.`id` = `User`.`userRoleId`)'), 'UserRole'],
+          'createdAt', 
+          'updatedAt'
+        ], 
+      });
       return res;
     }
 
-    async findByPk(id) {
-      const res = await models.User.findByPk(id);
-      return res;
+    async findByPk(id, options = {}) {
+      const t = options.transaction || null;
+      const user = await models.User.findByPk(id, { transaction: t });
+      return user;
     }
 
     async findOne(where) {
@@ -25,18 +38,43 @@ class UserService {
       return res;
     }
 
-    async update(id, data, options = {}) {
+    
+    async update(id,data, options = {}) {
       const t = options.transaction || null;
-      const model = await this.findByPk(id, { transaction: t } );
-      const res = await model.update(data, { transaction: t } );
-      return res;
+      try {
+        const model = await this.findByPk(id, { transaction: t });
+        
+        if (!model) {
+          const error = new Error("Usuario no encontrado");
+          error.statusCode = 400;
+          throw error;
+        }
+        
+        const res = await model.update(data, { transaction: t } );
+        
+        return { update: true, data: res};
+      } catch (error) {
+        return { update: false, error: error.message, statusCode: error.statusCode || 500 };
+      }
     }
 
     async delete(id, options = {}) {
       const t = options.transaction || null;
-      const model = await this.findByPk(id, { transaction: t });
-      await model.destroy({ transaction: t });
-      return { deleted: true };
+      try {
+        const model = await this.findByPk(id, { transaction: t });
+        
+        if (!model) {
+          const error = new Error("Usuario no encontrado");
+          error.statusCode = 400;
+          throw error;
+        }
+        
+        await model.destroy({ transaction: t });
+        
+        return { deleted: true };
+      } catch (error) {
+        return { deleted: false, error: error.message, statusCode: error.statusCode || 500 };
+      }
     }
 
     async findByEmail(email) {
@@ -53,10 +91,8 @@ class UserService {
           required: false
         }
         ],
-        where: {
-          [Op.or]: [
-            { email }
-          ]
+        where:  {
+          email: email 
         },
        
       });

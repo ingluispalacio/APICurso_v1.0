@@ -3,6 +3,10 @@ const service = new ProgressLessonService();
 
 const create = async ( req, res ) => {
     try { 
+        const { userId, lessonId } = req.body;
+        if (!userId || !lessonId ) {
+            return res.status(400).send({ success: false, message: "Los campos 'userId' y 'lessonId' son obligatorios" });
+        }
         const response = await service.create(req.body);
         res.json({ success: true, message: 'Creacion exitosa', data: response});
     } catch (error) {

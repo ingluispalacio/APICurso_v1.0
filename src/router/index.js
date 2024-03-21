@@ -2,7 +2,7 @@
 const express = require('express'); 
 
 const progressCourseRoute = require('./routes/progressCourse.routes');
-const progresssLessonRoute = require('./routes/progresssLesson.routes');
+const progressLessonRoute = require('./routes/progresssLesson.routes');
 const userRoleRoute = require('./routes/userRole.routes');
 const courseRoute = require('./routes/course.routes');
 const stateRoute = require('./routes/state.routes');
@@ -21,7 +21,7 @@ const routerApi= (app)=>{
 
 
   router.use('/progressCourse',  verifyToken, progressCourseRoute);
-  router.use('/progresssLesson', verifyToken, progresssLessonRoute);
+  router.use('/progressLesson', verifyToken, progressLessonRoute);
   router.use('/userRole',  verifyToken, verifyPermission(['ADMINISTRADOR']), userRoleRoute);
   router.use('/state',  verifyToken, verifyPermission(['ADMINISTRADOR']),stateRoute);
   router.use('/course', verifyToken, courseRoute);
