@@ -1,0 +1,1848 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "version": "1.0.0",
+      "description": "Documentación de API para explorar y administrar cursos, la cual permitirá conocer y modificar los cursos que lo componen y entender el progreso en el que se encuentran los usuarios.",
+      "title": "API REST CURSO",
+      "contact": {
+        "email": "palaciodimasluisenrique@gmail.com"
+      }
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000/api/v1/",
+        "description": "Servidor HTTP"
+      }
+    ],
+    "tags": [
+      {
+        "name": "Auth",
+        "description": "Endpoints para Autenticacion"
+      },
+      {
+        "name": "UserRoles",
+        "description": "Endpoints para roles de usuario"
+      },
+      {
+        "name": "IdentificationTypes",
+        "description": "Endpoints para tipos de identificaciones"
+      },
+      {
+        "name": "States",
+        "description": "Endpoints para estados de cursos y lecciones"
+      },
+      {
+        "name": "Users",
+        "description": "Endpoints para gestionar usuarios"
+      },
+      {
+        "name": "Courses",
+        "description": "Endpoints para gestionar cursos"
+      },
+      {
+        "name": "Lessons",
+        "description": "Endpoints para gestionar Lecciones"
+      },
+      {
+        "name": "ProgressCourses",
+        "description": "Endpoints para gestionar progreso de los cursos"
+      },
+      {
+        "name": "ProgressLessons",
+        "description": "Endpoints para gestionar progreso de las lecciones"
+      }
+    ],
+    "components": {
+      "securitySchemes": {
+        "BearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      }
+    },
+    "security": [
+      {
+        "BearerAuth": []
+      }
+    ],
+   
+    "paths": {
+      
+      "/auth/login": {
+        "post": {
+          "tags": [
+            "Auth"
+          ],
+          "summary": "Inicia sesión",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "description": "Correo electrónico del usuario"
+                    },
+                    "password": {
+                      "type": "string",
+                      "description": "Contraseña del usuario"
+                    }
+                  },
+                  "required": ["email", "password"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Inicio de sesión exitoso",
+              "schema": {
+                "$ref": "#/definitions/LoginResponse"
+              }
+            },
+            "401": {
+              "description": "Credenciales incorrectas"
+            },
+            "404": {
+              "description": "Usuario no encontrado"
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        }
+      },
+      "/auth/register": {
+        "post": {
+          "tags": [
+            "Auth"
+          ],
+          "summary": "Crea un nuevo usuario",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/AuthInput"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Creación exitosa",
+              "schema": {
+                "$ref": "#/definitions/AuthResponse"
+              }
+            },
+            "404": {
+              "description": "Usuario ya existente"
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        }
+      },
+
+
+      "/userRole": {
+        "get": {
+          "tags": [
+            "UserRoles"
+          ],
+          "summary": "Obtiene todos los roles de usuario",
+          "produces": ["application/json"],
+          "responses": {
+            "200": {
+              "description": "Consulta exitosa",
+              "schema": {
+                "$ref": "#/definitions/UserRoleListResponse"
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "post": {
+          "tags": [
+            "UserRoles"
+          ],
+          "summary": "Crea un nuevo rol de usuario",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UserRoleInput"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Creación exitosa",
+              "schema": {
+                "$ref": "#/definitions/UserRoleResponse"
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }          
+        }
+      },
+      "/userRole/{id}": {
+        "get": {
+          "tags": [
+            "UserRoles"
+          ],
+          "summary": "Obtiene un rol de usuario por su ID",
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "format": "uuid",
+              "description": "ID del rol de usuario"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Consulta exitosa",
+              "schema": {
+                "$ref": "#/definitions/UserRoleResponse"
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "put": {
+          "tags": [
+            "UserRoles"
+          ],
+          "summary": "Actualiza un rol de usuario por su ID",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UserRoleInput"
+                  }
+                }
+              }
+            },
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "format": "uuid",
+              "description": "ID del rol de usuario"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Actualización exitosa",
+              "schema": {
+                "$ref": "#/definitions/UserRoleResponse"
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "delete": {
+          "tags": [
+            "UserRoles"
+          ],
+          "summary": "Elimina un rol de usuario por su ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "format": "uuid",
+              "description": "ID del rol de usuario"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Eliminación exitosa",
+              "schema": {
+                "$ref": "#/definitions/SuccessResponse"
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        }
+      },
+
+
+      "/identificationType": {
+        "get": {
+          "tags": [
+            "IdentificationTypes"
+          ],
+          "summary": "Obtener todos los tipos de identificación",
+          "responses": {
+            "200": {
+              "description": "Éxito al obtener los tipos de identificación",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/IdentificationType"
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "post": {
+          "tags": [
+            "IdentificationTypes"
+          ],
+          "summary": "Crear un nuevo tipo de identificación",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/IdentificationTypeInput"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Creación exitosa del tipo de identificación",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/definitions/IdentificationType"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        }
+      },
+      "/identificationType/{id}": {
+        "get": {
+          "tags": [
+            "IdentificationTypes"
+          ],
+          "summary": "Obtener un tipo de identificación por ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "description": "ID del tipo de identificación a obtener"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Éxito al obtener el tipo de identificación",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/definitions/IdentificationType"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "put": {
+          "tags": [
+            "IdentificationTypes"
+          ],
+          "summary": "Actualizar un tipo de identificación por ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "description": "ID del tipo de identificación a actualizar"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/IdentificationTypeInput"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Actualización exitosa del tipo de identificación",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/definitions/IdentificationType"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "delete": {
+          "tags": [
+            "IdentificationTypes"
+          ],
+          "summary": "Eliminar un tipo de identificación por ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "description": "ID del tipo de identificación a eliminar"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Eliminación exitosa del tipo de identificación"
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        }
+      },
+
+
+      "/state": {
+        "get": {
+          "tags": ["States"],
+          "summary": "Obtener todos los estados",
+          "responses": {
+            "200": {
+              "description": "Éxito al obtener los estados",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/State"
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "post": {
+          "tags": ["States"],
+          "summary": "Crear un nuevo estado",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/StateInput"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Creación exitosa del estado",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/definitions/State"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        }
+      },
+      "/state/{id}": {
+        "get": {
+          "tags": ["States"],
+          "summary": "Obtener un estado por ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "description": "ID del estado a obtener"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Éxito al obtener el estado",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/definitions/State"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "put": {
+          "tags": ["States"],
+          "summary": "Actualizar un estado por ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "description": "ID del estado a actualizar"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/StateInput"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Actualización exitosa del estado",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/definitions/State"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "delete": {
+          "tags": ["States"],
+          "summary": "Eliminar un estado por ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "description": "ID del estado a eliminar"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Eliminación exitosa del estado"
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        }
+      },
+
+      "/user": {
+        "get": {
+          "tags": [
+            "Users"
+          ],
+          "summary": "Obtener todos los usuarios",
+          "responses": {
+            "200": {
+              "description": "Éxito al obtener los usuarios",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/User"
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        }
+      },
+      "/user/{id}": {
+        "get": {
+          "tags": [
+            "Users"
+          ],
+          "summary": "Obtener un usuario por ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "description": "ID del usuario a obtener"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Éxito al obtener el usuario",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/definitions/User"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "put": {
+          "tags": [
+            "Users"
+          ],
+          "summary": "Actualizar un usuario por ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "description": "ID del usuario a actualizar"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UserInput"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Actualización exitosa del usuario",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/definitions/User"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "delete": {
+          "tags": [
+            "Users"
+          ],
+          "summary": "Eliminar un usuario por ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "description": "ID del usuario a eliminar"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Eliminación exitosa del usuario"
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        }
+      },
+
+
+      "/course": {
+        "get": {
+          "tags": ["Courses"],
+          "summary": "Obtener cursos",
+          "parameters": [
+            {
+              "name": "page",
+              "in": "query",
+              "description": "Número de página",
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Límite de resultados por página",
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "title",
+              "in": "query",
+              "description": "Título del curso",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "startDate",
+              "in": "query",
+              "description": "Fecha de inicio",
+              "schema": {
+                "type": "string",
+                "format": "date"
+              }
+            },
+            {
+              "name": "endDate",
+              "in": "query",
+              "description": "Fecha de fin",
+              "schema": {
+                "type": "string",
+                "format": "date"
+              }
+            },
+            {
+              "name": "stateCourse",
+              "in": "query",
+              "description": "Estado del curso",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Éxito al obtener los cursos",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/Course"
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "post": {
+          "tags": ["Courses"],
+          "summary": "Crear un nuevo curso y lecciones relacionadas al mismo",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/CourseInput"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Creación exitosa del curso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/definitions/Course"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Ya existe un Curso con el mismo titulo"
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        }
+      },
+      "/course/{id}": {
+        "get": {
+          "tags": ["Courses"],
+          "summary": "Obtener un curso por ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "description": "ID del curso a obtener"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Éxito al obtener el curso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/definitions/Course"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "put": {
+          "tags": ["Courses"],
+          "summary": "Actualizar un curso por ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "description": "ID del curso a actualizar"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/CourseInput"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Actualización exitosa del curso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/definitions/Course"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "delete": {
+          "tags": ["Courses"],
+          "summary": "Eliminar un curso por ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "description": "ID del curso a eliminar"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Eliminación exitosa del curso"
+            },
+            "405": {
+              "description": "No se puede eliminar el curso porque tiene progreso asociado."
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        }
+      },
+
+      "/lesson": {
+        "get": {
+          "tags": ["Lessons"],
+          "summary": "Obtener todas las lecciones",
+          "responses": {
+            "200": {
+              "description": "Operación exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "data": { "type": "array", "items": { "$ref": "#/components/schemas/Lesson" } }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        }
+      },
+      "/lesson/{id}": {
+        "get": {
+          "tags": ["Lessons"],
+          "summary": "Obtener una lección por ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID de la lección",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operación exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "data": { "$ref": "#/components/schemas/Lesson" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "put": {
+          "tags": ["Lessons"],
+          "summary": "Actualizar una lección",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID de la lección",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LessonInput" }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Operación exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "message": { "type": "string" },
+                      "data": { "$ref": "#/components/schemas/Lesson" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "delete": {
+          "tags": ["Lessons"],
+          "summary": "Eliminar una lección",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID de la lección",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operación exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "message": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            },
+            "405": {
+              "description": "No se puede eliminar la lección porque tiene progreso asociado."
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        }
+      },
+
+      "/progressCourse": {
+        "get": {
+          "tags": ["ProgressCourses"],
+          "summary": "Obtener todo el progreso del curso",
+          "responses": {
+            "200": {
+              "description": "Operación exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "data": { "type": "array", "items": { "$ref": "#/definitions/ProgressCourse" } }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "post": {
+          "tags": ["ProgressCourses"],
+          "summary": "Crear progreso de curso",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/definitions/ProgressCourseInput" }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Operación exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "message": { "type": "string" },
+                      "data": { "$ref": "#/definitions/ProgressCourse" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        }
+      },
+      "/progressCourse/{id}": {
+        "get": {
+          "tags": ["ProgressCourses"],
+          "summary": "Obtener el progreso del curso por ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID del progreso del curso",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operación exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "data": { "$ref": "#/definitions/ProgressCourse" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "put": {
+          "tags": ["ProgressCourses"],
+          "summary": "Actualizar el progreso del curso",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID del progreso del curso",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/definitions/ProgressCourseInput" }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Operación exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "message": { "type": "string" },
+                      "data": { "$ref": "#/definitions/ProgressCourse" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "delete": {
+          "tags": ["ProgressCourses"],
+          "summary": "Eliminar el progreso del curso",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID del progreso del curso",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operación exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "message": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        }
+      },
+
+      "/progressLesson": {
+        "get": {
+          "tags": ["ProgressLessons"],
+          "summary": "Obtener todo el progreso de la lección",
+          "responses": {
+            "200": {
+              "description": "Operación exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "data": { "type": "array", "items": { "$ref": "#/definitions/ProgressLesson" } }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "post": {
+          "tags": ["ProgressLessons"],
+          "summary": "Crear progreso de lección",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/definitions/ProgressLessonInput" }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Operación exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "message": { "type": "string" },
+                      "data": { "$ref": "#/definitions/ProgressLesson" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        }
+      },
+      "/progressLesson/{id}": {
+        "get": {
+          "tags": ["ProgressLessons"],
+          "summary": "Obtener el progreso de la lección por ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID del progreso de la lección",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operación exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "data": { "$ref": "#/definitions/ProgressLesson" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "put": {
+          "tags": ["ProgressLessons"],
+          "summary": "Actualizar el progreso de la lección",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID del progreso de la lección",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/definitions/ProgressLessonInput" }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Operación exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "message": { "type": "string" },
+                      "data": { "$ref": "#/definitions/ProgressLesson" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        },
+        "delete": {
+          "tags": ["ProgressLessons"],
+          "summary": "Eliminar el progreso de la lección",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID del progreso de la lección",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operación exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "message": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno del servidor"
+            }
+          }
+        }
+      }
+
+    },
+    "definitions": {
+      "AuthInput": {
+        "type": "object",
+        "properties": {
+          "fullname": {
+            "type": "string",
+            "description": "Nombre completo del usuario"
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Fecha de nacimiento del usuario"
+          },
+          "email": {
+            "type": "string",
+            "description": "Correo electrónico del usuario"
+          },
+          "password": {
+            "type": "string",
+            "description": "Contraseña del usuario"
+          },
+          "identificationTypeId": {
+            "type": "integer",
+            "description": "ID del tipo de identificación del usuario"
+          },
+          "identificationNumber": {
+            "type": "string",
+            "description": "Número de identificación del usuario"
+          },
+          "userRoleId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID del rol de usuario del usuario"
+          }
+        },
+        "required": ["fullname", "birthDate", "email", "password", "userRoleId"]
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indica si la operación fue exitosa"
+          },
+          "message": {
+            "type": "string",
+            "description": "Mensaje de respuesta"
+          },
+          "data": {
+            "$ref": "#/definitions/User"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indica si la operación fue exitosa"
+          },
+          "message": {
+            "type": "string",
+            "description": "Mensaje de respuesta"
+          },
+          "token": {
+            "type": "string",
+            "description": "Token de autenticación"
+          },
+          "fecha_creacion": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Fecha de creación del token"
+          },
+          "expira": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Fecha de expiración del token"
+          },
+          "user": {
+            "$ref": "#/definitions/User"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID del usuario"
+          },
+          "fullname": {
+            "type": "string",
+            "description": "Nombre completo del usuario"
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Fecha de nacimiento del usuario"
+          },
+          "email": {
+            "type": "string",
+            "description": "Correo electrónico del usuario"
+          },
+          "identificationTypeId": {
+            "type": "integer",
+            "description": "ID del tipo de identificación del usuario"
+          },
+          "identificationNumber": {
+            "type": "string",
+            "description": "Número de identificación del usuario"
+          },
+          "userRoleId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID del rol de usuario del usuario"
+          }
+        }
+      },
+
+      "UserRoleInput": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Descripción del rol de usuario"
+          }
+        }
+      },
+      "UserRoleResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indica si la operación fue exitosa"
+          },
+          "message": {
+            "type": "string",
+            "description": "Mensaje de respuesta"
+          },
+          "data": {
+            "$ref": "#/definitions/UserRole"
+          }
+        }
+      },
+      "UserRoleListResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indica si la operación fue exitosa"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/UserRole"
+            }
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indica si la operación fue exitosa"
+          },
+          "message": {
+            "type": "string",
+            "description": "Mensaje de respuesta"
+          }
+        }
+      },
+      "UserRole": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID del rol de usuario"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descripción del rol de usuario"
+          }
+        }
+      },
+
+      "IdentificationTypeInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "description"]
+      },
+      "IdentificationType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+
+      "StateInput": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": ["title"]
+      },
+      "State": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          }
+        }
+      },
+
+
+      "UserInput": {
+        "type": "object",
+        "properties": {
+          "fullname": {
+            "type": "string"
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "identificationTypeId": {
+            "type": "integer"
+          },
+          "identificationNumber": {
+            "type": "string"
+          },
+          "userRoleId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": ["fullname", "birthDate", "email", "password", "userRoleId"]
+      },
+
+
+      "Course": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "logo": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "publicationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "introductoryVideo": {
+            "type": "string"
+          }
+        }
+      },
+      "CourseInput": {
+        "type": "object",
+        "properties": {
+          "logo": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "publicationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "introductoryVideo": {
+            "type": "string"
+          },
+          "lessons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/LessonInput"
+            }
+          }
+        },
+        "required": ["logo", "title", "description", "publicationDate", "introductoryVideo"]
+      },
+
+
+      "Lesson": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "videoLink": {
+            "type": "string"
+          }
+        }
+      },
+      "LessonInput": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "videoLink": {
+            "type": "string"
+          }
+        },
+        "required": ["title", "description", "videoLink"]
+      },
+
+      "ProgressCourse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "userId": { "type": "string", "format": "uuid" },
+          "courseId": { "type": "string", "format": "uuid" },
+          "stateId": { "type": "integer" },
+          "ApprovedDate": { "type": "string", "format": "date-time" }
+        },
+        "required": ["id", "userId", "courseId", "stateId"]
+      },
+      "ProgressCourseInput": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string", "format": "uuid" },
+          "courseId": { "type": "string", "format": "uuid" },
+          "stateId": { "type": "integer" },
+          "ApprovedDate": { "type": "string", "format": "date-time" }
+        },
+        "required": ["userId", "courseId", "stateId"]
+      },
+
+      "ProgressLesson": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "userId": { "type": "string", "format": "uuid" },
+          "lessonId": { "type": "string", "format": "uuid" },
+          "stateId": { "type": "integer" }
+        },
+        "required": ["id", "userId", "lessonId", "stateId"]
+      },
+      "ProgressLessonInput": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string", "format": "uuid" },
+          "lessonId": { "type": "string", "format": "uuid" },
+          "stateId": { "type": "integer" }
+        },
+        "required": ["userId", "lessonId", "stateId"]
+      }
+
+    }
+  }
