@@ -10,8 +10,8 @@
     },
     "servers": [
       {
-        "url": "http://localhost:3000/api/v1/",
-        "description": "Servidor HTTP"
+        "url": "https://apicurso-v1-0.onrender.com/api/v1/",
+        "description": "Servidor HTTPS"
       }
     ],
     "tags": [
