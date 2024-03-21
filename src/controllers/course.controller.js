@@ -14,6 +14,9 @@ const create = async (req, res) => {
     if (!logo || !title || !description || !publicationDate || !lessons ) {
         return res.status(400).send({ success: false, message: "Los campos 'logo', 'title', 'description', 'publicationDate' y 'lessons' son obligatorios" });
     }
+    if (!Array.isArray(lessons)) {
+        return res.status(400).send({ success: false, message: "el contenido de 'lessons' debe ser un array" });
+    }
     const courseData = {
         logo: logo,
         title: title,
