@@ -5,6 +5,7 @@
       "description": "Documentación de API para explorar y administrar cursos, la cual permitirá conocer y modificar los cursos que lo componen y entender el progreso en el que se encuentran los usuarios.",
       "title": "API REST CURSO",
       "contact": {
+        "name": "Ing. Luis Palacio",
         "email": "palaciodimasluisenrique@gmail.com"
       }
     },
@@ -14,6 +15,10 @@
         "description": "Servidor HTTPS"
       }
     ],
+    "externalDocs": {
+      "description": "Repositorio de la aplicación en GitHub",
+      "url": "https://github.com/ingluispalacio/APICurso_v1.0"
+    },
     "tags": [
       {
         "name": "Auth",
