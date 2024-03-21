@@ -53,8 +53,14 @@ const get = async (req, res) => {
     try {
         const { page, limit, title, startDate, endDate, stateCourse } = req.query;
         const userRole = req.user ? req.user.UserRole.description : null;
-        const response = await service.findParam({ page, limit, title, startDate, endDate, stateCourse, userRole });
-        res.json({ success: true, data: response });
+        if (page<=0) {
+            res.status(400).send({ success: false, message: "El número de pagina debe ser mayor a 0" });
+        }
+        if (page>0) {
+            const response = await service.findParam({ page, limit, title, startDate, endDate, stateCourse, userRole });
+            res.json({ success: true, data: response }); 
+        }
+        
     } catch (error) {
         res.status(500).send({ success: false, message: error.message });
     }
