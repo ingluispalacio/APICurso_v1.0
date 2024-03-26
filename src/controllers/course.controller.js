@@ -62,6 +62,12 @@ const get = async (req, res) => {
         if (page==null || limit ==null) {
             res.status(400).send({ success: false, message: "El número de pagina y el limite son requeridos" });
         }
+        
+        if (isNaN(page) || isNaN(limit)) {
+            res.status(400).send({ success: false, message: "El número de página y el límite deben ser valores numéricos" });
+            return;
+        }
+
         if (page<=0) {
             res.status(400).send({ success: false, message: "El número de pagina debe ser mayor a 0" });
         }
