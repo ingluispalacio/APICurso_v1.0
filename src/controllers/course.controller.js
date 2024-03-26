@@ -59,6 +59,9 @@ const get = async (req, res) => {
     try {
         const { page, limit, title, startDate, endDate, stateCourse } = req.query;
         const userRole = req.user ? req.user.UserRole.description : null;
+        if (page==null || limit ==null) {
+            res.status(400).send({ success: false, message: "El número de pagina y el limite son requeridos" });
+        }
         if (page<=0) {
             res.status(400).send({ success: false, message: "El número de pagina debe ser mayor a 0" });
         }
